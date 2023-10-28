@@ -13,7 +13,7 @@ function callback(data, status){
 		temp = parseFloat(data.result);
 		temp = temp.toFixed(2);
 		g.refresh(temp);
-		setTimeout(getReading, 1000);
+		setTimeout(getReading, 400);
 	}
 	else {
 		alert("There was a problem");
