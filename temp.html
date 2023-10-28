@@ -1,0 +1,45 @@
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="raphael-2.1.4.min.js"></script>
+<script src="justgage.js"></script>
+
+<script>
+var accessToken = "32c87f834fe3f4b89fab39185a62f236d245d7b0";
+var deviceID = "380035000c47343438323536"
+var url = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
+function callback(data, status){
+	if (status == "success") {
+		temp = parseFloat(data.result);
+		temp = temp.toFixed(2);
+		g.refresh(temp);
+		setTimeout(getReading, 1000);
+	}
+	else {
+		alert("There was a problem");
+	}
+}
+function getReading(){
+   	$.get(url, {access_token: accessToken}, callback);
+}
+</script>
+</head>	
+
+<body>
+<div id="gauge" class="200x160px"></div>
+
+<script>
+var g = new JustGage({
+    id: "gauge",
+    value: 0,
+    min: 0,
+    max: 60,
+    title: "Temperatura (C)",
+	levelColors: ["#FF007F"],//Color del gráfico a rosa
+	titleFontColor: "#000"//Color de la fuente
+});
+getReading();
+</script>
+
+</body>
+</html>
