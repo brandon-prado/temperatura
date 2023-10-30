@@ -1,44 +1,83 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="raphael-2.1.4.min.js"></script>
 <script src="justgage.js"></script>
+</head>
+
+<body>
+<div id="gauge1" class="200x160px" style="float: left;"></div>
+<div id="gauge2" class="200x160px" style="float: left;"></div>
+<div id="gauge3" class="200x160px" style="float: left;"></div>
 
 <script>
 var accessToken = "32c87f834fe3f4b89fab39185a62f236d245d7b0";
-var deviceID = "380035000c47343438323536"
-var url = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
-function callback(data, status){
-	if (status == "success") {
-		temp = parseFloat(data.result);
-		temp = temp.toFixed(2);
-		g.refresh(temp);
-		setTimeout(getReading, 400);
-	}
-	else {
-		alert("There was a problem");
-	}
-}
-function getReading(){
-   	$.get(url, {access_token: accessToken}, callback);
-}
-</script>
-</head>	
+var deviceID = "380035000c47343438323536";
+var urlC = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
+var urlF = "https://api.particle.io/v1/devices/" + deviceID + "/gradosF";
+var urlH = "https://api.particle.io/v1/devices/" + deviceID + "/humedad";
 
-<body>
-<div id="gauge" class="200x160px"></div>
+function callback(data, status, g) {
+    if (status == "success") {
+        temp = parseFloat(data.result);
+        temp = temp.toFixed(2);
+        g.refresh(temp);
+        setTimeout(function () {
+            getReading(g);
+        }, 200);
+    } else {
+        alert("There was a problem");
+    }
+}
 
-<script>
-var g = new JustGage({
-    id: "gauge",
+function getReading(g) {
+    var url;
+    if (g == gauge1) {
+        url = urlC;
+    } else if (g == gauge2) {
+        url = urlF;
+    } else if (g == gauge3) {
+        url = urlH;
+    }
+
+    $.get(url, { access_token: accessToken }, function (data, status) {
+        callback(data, status, g);
+    });
+}
+
+var gauge1 = new JustGage({
+    id: "gauge1",
     value: 0,
     min: 0,
     max: 60,
-    title: "Temperatura °C",
-	levelColors: ["#FF007F"],//Color del gráfico a rosa
-	titleFontColor: "#000"//Color de la fuente
+    title: "Temperatura (C)",
+    levelColors: ["#FF007F"], //Color del gráfico a rosa
+    titleFontColor: "#000" //Color de la fuente
 });
-getReading();
+getReading(gauge1);
+
+var gauge2 = new JustGage({
+    id: "gauge2",
+    value: 0,
+    min: 0,
+    max: 200,
+    title: "Temperatura (F)",
+    levelColors: ["#FF007F"],
+    titleFontColor: "#000"
+});
+getReading(gauge2);
+
+var gauge3 = new JustGage({
+    id: "gauge3",
+    value: 0,
+    min: 0,
+    max: 100,
+    title: "Humedad",
+    levelColors: ["#FF007F"],
+    titleFontColor: "#000"
+});
+getReading(gauge3);
 </script>
 
 </body>
